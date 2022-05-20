@@ -13,6 +13,7 @@ class Block {
 }
 //class method that generates block hash
 Block.calculateBlockHash = (index, previousHash, data, timestamp) => CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
+// validating block structure
 Block.validateStructure = (aBlock) => typeof aBlock.index === "number" &&
     typeof aBlock.hash === "string" &&
     typeof aBlock.previousHash === "string" &&
@@ -37,6 +38,8 @@ const createNewBlock = (data) => {
     const newBlock = new Block(newIndex, newHash, previousBlock.hash, data, newTimestamp);
     return newBlock;
 };
+const getHashForBlock = (aBlock) => Block.calculateBlockHash(aBlock.index, aBlock.previousHash, aBlock.data, aBlock.timestamp);
+//validating block structure
 const isBlockValid = (candidateBlock, previousBlock) => {
     if (!Block.validateStructure(candidateBlock)) {
         return false;
@@ -46,6 +49,18 @@ const isBlockValid = (candidateBlock, previousBlock) => {
     }
     else if (previousBlock.hash !== candidateBlock.previousHash) {
         return false;
+    }
+    else if (getHashForBlock(candidateBlock) !== candidateBlock.hash) {
+        return false;
+    }
+    else {
+        return true;
+    }
+};
+//add the validated block to the blockchain
+const addBlock = (candidateBlock) => {
+    if (isBlockValid(candidateBlock, getLatestBlock())) {
+        blockchain.push(candidateBlock);
     }
 };
 //# sourceMappingURL=index.js.map

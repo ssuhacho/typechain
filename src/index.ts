@@ -11,6 +11,7 @@ class Block {
   ): string =>
     CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
 
+// validating block structure
   static validateStructure = (aBlock: Block): boolean =>
     typeof aBlock.index === "number" &&
     typeof aBlock.hash === "string" &&
@@ -75,7 +76,10 @@ const createNewBlock = (data: string): Block => {
   return newBlock;
 };
 
+const getHashForBlock = (aBlock: Block) :string => Block.calculateBlockHash(aBlock.index, aBlock.previousHash, aBlock.data, aBlock.timestamp);
 
+
+//validating block structure
 const isBlockValid = (candidateBlock: Block, previousBlock: Block): boolean => {
   if (!Block.validateStructure(candidateBlock)) {
     return false;
@@ -83,8 +87,19 @@ const isBlockValid = (candidateBlock: Block, previousBlock: Block): boolean => {
       return false;
   } else if (previousBlock.hash !== candidateBlock.previousHash){
       return false;
+  } else if (getHashForBlock(candidateBlock) !== candidateBlock.hash){
+      return false;
+  } else{
+      return true;
   }
 };
+
+//add the validated block to the blockchain
+const addBlock = (candidateBlock: Block) : void => {
+    if (isBlockValid(candidateBlock, getLatestBlock())){
+        blockchain.push (candidateBlock);
+    }
+}
 
 
 export {};
