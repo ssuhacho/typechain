@@ -73,6 +73,9 @@ const createNewBlock = (data: string): Block => {
     data,
     newTimestamp
   );
+    //add new block
+    addBlock(newBlock);
+
   return newBlock;
 };
 
@@ -101,5 +104,10 @@ const addBlock = (candidateBlock: Block) : void => {
     }
 }
 
+createNewBlock("second block");
+createNewBlock("third block");
+createNewBlock("fourth block");
+
+console.log(blockchain);
 
 export {};
